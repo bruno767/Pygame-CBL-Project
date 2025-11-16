@@ -1,5 +1,4 @@
 # 🎮 Challenge-Based Learning: Programming with Pygame & Math
-## For Samuel - High School ITA Student
 
 ### 🎯 Learning Philosophy
 **Progressive & Playful**: Each challenge builds on the previous one, using math and physics concepts you already know to learn programming naturally.
