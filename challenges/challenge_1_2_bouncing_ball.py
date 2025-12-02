@@ -62,6 +62,9 @@ print("🌍 Gravity is pulling the ball down")
 clock = pygame.time.Clock()
 running = True
 
+
+# testing code 
+
 while running:
     # Handle events
     for event in pygame.event.get():
