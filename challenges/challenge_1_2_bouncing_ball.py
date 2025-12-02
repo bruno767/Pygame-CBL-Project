@@ -40,7 +40,7 @@ ball_y = WINDOW_HEIGHT // 2
 
 # Ball 2 properties
 ball_2_x = WINDOW_WIDTH  # Start in top right
-ball_2_y = 0
+ball_2_y = BALL_2_RADIUS
 
 # Velocity vector: (speed_x, speed_y)
 # This represents both direction AND speed
@@ -48,7 +48,9 @@ speed_x = 5
 speed_y = -4  # Negative means moving up
 
 speed_2_x = speed_x * 2
-speed_2_y = speed_x * -1 
+speed_2_y = speed_y * -1
+
+
 
 # Physics properties
 bounce_damping = 0.98  # Energy loss on bounce (0.98 = 2% energy lost)
@@ -102,7 +104,8 @@ while running:
         print(f"💥 Bounced ball 1 off left wall! Speed: {speed_x:.2f}")
 
     # right edge ball 2 
-    if ball_x + BALL_2_RADIUS > WINDOW_WIDTH:  
+    if ball_2_x + BALL_2_RADIUS > WINDOW_WIDTH:
+  
         ball_2_x = WINDOW_WIDTH - BALL_2_RADIUS  # Keep ball on screen
         speed_2_x = -speed_2_x * bounce_damping  # Reverse and lose energy
         print(f"💥 Bounced ball 2  off right wall! Speed: {speed_2_x:.2f}")
