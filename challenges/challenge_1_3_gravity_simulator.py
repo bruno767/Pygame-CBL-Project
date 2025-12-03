@@ -31,6 +31,9 @@ GRAVITY = 9.8  # m/s² (real Earth gravity)
 PIXELS_PER_METER = 50  # Scale: 50 pixels = 1 meter
 GRAVITY_PIXELS = GRAVITY * PIXELS_PER_METER / 60  # Convert to pixels per frame (at 60 FPS)
 
+# Bounce damping constant - ADDED THIS
+BOUNCE_DAMPING = 0.7  # Energy lost on bounce (0.7 = keeps 70% of velocity)
+
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("Challenge 1.3: Gravity Simulator!")
 
@@ -48,6 +51,9 @@ class FallingObject:
         
         # Track if object has hit ground
         self.on_ground = False
+        
+        # Track bounce count - ADDED THIS
+        self.bounce_count = 0
     
     def update(self, delta_time):
         """Update object's position based on physics"""
@@ -62,10 +68,22 @@ class FallingObject:
             # Check if hit ground
             ground_y = WINDOW_HEIGHT - GROUND_HEIGHT
             if self.y + self.radius >= ground_y:
-                self.y = ground_y - self.radius
-                self.on_ground = True
-                self.velocity_y = 0
-                print(f"🛬 Object landed! Final velocity: {self.velocity_y:.2f} px/frame")
+                # ADDED BOUNCE PHYSICS
+                if self.bounce_count < 3 and abs(self.velocity_y) > 2:  # Bounce up to 3 times
+                    # Reverse velocity and apply damping
+                    self.velocity_y = -self.velocity_y * BOUNCE_DAMPING
+                    self.bounce_count += 1
+                    self.y = ground_y - self.radius  # Keep above ground
+                    print(f"🔴 Bounce #{self.bounce_count}! Velocity: {self.velocity_y:.2f}")
+                else:
+                    # Final landing
+                    self.y = ground_y - self.radius
+                    self.on_ground = True
+                    self.velocity_y = 0
+                    if self.bounce_count > 0:
+                        print(f"🛑 Object landed after {self.bounce_count} bounces")
+                    else:
+                        print(f"🛬 Object landed! Final velocity: {self.velocity_y:.2f} px/frame")
     
     def draw(self, surface):
         """Draw the object on the screen"""
@@ -90,6 +108,7 @@ objects = [
 
 print("🌍 Gravity Simulator started!")
 print("💡 All objects fall with the same acceleration (g = 9.8 m/s²)")
+print("💥 Objects now bounce with damping coefficient:", BOUNCE_DAMPING)
 print("🖱️ Click to drop a new object!")
 
 # Game loop
@@ -137,7 +156,8 @@ while running:
                            True, (255, 255, 255))
     screen.blit(info_text, (10, 10))
     
-    physics_text = font.render("All objects fall at the same rate! (Galileo was right!)", 
+    # Updated physics text - ADDED BOUNCE INFO
+    physics_text = font.render(f"Objects bounce with {BOUNCE_DAMPING*100:.0f}% energy conservation", 
                               True, (200, 200, 255))
     screen.blit(physics_text, (10, 35))
     
@@ -152,16 +172,18 @@ sys.exit()
 2. What would happen if we made gravity stronger? Weaker?
 3. How does delta_time make the simulation frame-rate independent?
 4. What's the difference between velocity and acceleration?
+5. How does bounce damping affect the number of bounces?
 
 🔬 Experiment Ideas:
 - Change GRAVITY to simulate different planets
+- Change BOUNCE_DAMPING to see different bounce behaviors
+- Make objects bounce more times by increasing the bounce count limit
 - Add air resistance (drag force)
-- Make objects bounce when they hit the ground
 - Add horizontal velocity for projectile motion
 - Simulate moon gravity (1.6 m/s²) or Jupiter gravity (24.8 m/s²)
 
 📚 Physics Connection:
 This demonstrates Galileo's famous experiment - all objects fall 
 at the same rate regardless of mass (in a vacuum)!
+The bounce damping represents energy loss during collisions.
 """
-
