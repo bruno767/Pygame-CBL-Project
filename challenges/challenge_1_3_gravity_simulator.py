@@ -31,8 +31,8 @@ GRAVITY = 9.8  # m/s² (real Earth gravity)
 PIXELS_PER_METER = 50  # Scale: 50 pixels = 1 meter
 GRAVITY_PIXELS = GRAVITY * PIXELS_PER_METER / 60  # Convert to pixels per frame (at 60 FPS)
 
-# Bounce damping constant - ADDED THIS
-BOUNCE_DAMPING = 0.7  # Energy lost on bounce (0.7 = keeps 70% of velocity)
+# Bounce damping constant
+BOUNCE_DAMPING = 0.2  # Energy lost on bounce (0.7 = keeps 70% of velocity)
 
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("Challenge 1.3: Gravity Simulator!")
@@ -52,7 +52,7 @@ class FallingObject:
         # Track if object has hit ground
         self.on_ground = False
         
-        # Track bounce count - ADDED THIS
+        # Track bounce count
         self.bounce_count = 0
     
     def update(self, delta_time):
@@ -69,7 +69,7 @@ class FallingObject:
             ground_y = WINDOW_HEIGHT - GROUND_HEIGHT
             if self.y + self.radius >= ground_y:
                 # ADDED BOUNCE PHYSICS
-                if self.bounce_count < 3 and abs(self.velocity_y) > 2:  # Bounce up to 3 times
+                if abs(self.velocity_y) > 1:
                     # Reverse velocity and apply damping
                     self.velocity_y = -self.velocity_y * BOUNCE_DAMPING
                     self.bounce_count += 1
